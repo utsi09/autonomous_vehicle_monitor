@@ -1,4 +1,5 @@
 # 자율주행차의 센서 상태 모니터링 모듈
+Fail-Safe monitoring module for autonomous vehicle
 
 센서 구성 : 라이다, 카메라, IMU, GPS 
 ROS2 토픽 구독 : 센서들 및 예상 경로 생성을 위한 차량 상태 (heading, velocity)
