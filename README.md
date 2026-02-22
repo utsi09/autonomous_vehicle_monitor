@@ -17,12 +17,12 @@
 ### 1. 주행 중요 센서 동적 선택 (Dynamic Sensor Selection)
 <img width="1895" height="1062" alt="Image" src="https://github.com/user-attachments/assets/b9a0ac44-75c4-4da0-b93d-1f5a647bb6ca" />
 
-* **센서 FOV와 예상 경로 비교**: 실시간으로 예측된 주행 경로와 각 센서의 시야각을 분석하여, 현재 주행 상황에서 가장 핵심적인 역할을 수행하는 센서를 동적으로 선택합니다.
+* **센서 FOV와 예상 경로 비교**: 실시간으로 예측된 주행 경로(kinematic bicycle model 기반)와 각 센서의 시야각을 분석하여, 현재 주행 상황에서 가장 핵심적인 역할을 수행하는 센서를 동적으로 선택합니다.
     * **정상 센서 (Green)**: 정상 동작 중인 센서
     * **중요 센서 (Orange)**: 주행 경로상 핵심 정보를 제공하는 우선순위 센서
     * **고장 센서 (Red)**: 결함이 감지된 센서
 
-* **Path-based Sensor Selection**: Dynamically selects critical sensors by comparing the predicted vehicle trajectory with each sensor's Field of View (FOV).
+* **Path-based Sensor Selection**: Dynamically selects critical sensors by comparing the predicted vehicle trajectory(based on kinematic bicycle model) with each sensor's Field of View (FOV).
     * **Normal (Green)**: Sensors operating within normal parameters.
     * **Critical (Orange)**: Priority sensors providing essential data for the current path.
     * **Faulty (Red)**: Sensors where failures have been detected.
