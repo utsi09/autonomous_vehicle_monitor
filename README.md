@@ -37,4 +37,4 @@
     * Utilizing static and dynamic FTTI for fault diagnosis in accordance with ISO 26262 standards.
 
 ---
-**Researcher**: Eom Taewook (SKKU CNR Lab)
+**Researcher**: Eum Taewook (SKKU CNR Lab)
