@@ -1,13 +1,30 @@
-# 자율주행차의 센서 상태 모니터링 모듈
-Fail-Safe monitoring module for autonomous vehicle
+# 자율주행차 센서 상태 모니터링 모듈
+### Fail-Safe Monitoring Module for Autonomous Vehicles
 
+본 프로젝트는 자율주행 시스템의 안전성 확보를 위한 실시간 센서 상태 모니터링 및 고장 판단 알고리즘을 구현합니다.
 
+## 주요 구성
+* **센서 구성**: 라이다, 카메라, IMU, GPS
+    * Sensor Configuration: LiDAR, Camera, IMU, and GPS
+* **ROS 2 데이터 수집**: 센서 데이터 및 예상 경로 생성을 위한 차량 상태(Heading, Velocity) 구독
+    * ROS 2 Data Acquisition: Subscribing to sensor data and vehicle state (heading, velocity) for trajectory prediction
 
-센서 구성 : 라이다, 카메라, IMU, GPS 
+---
 
-ROS2 토픽 구독 : 센서들 및 예상 경로 생성을 위한 차량 상태 (heading, velocity)
+## 핵심 기능
 
+### 1. 주행 중요 센서 동적 선택
 <img width="1895" height="1062" alt="Image" src="https://github.com/user-attachments/assets/b9a0ac44-75c4-4da0-b93d-1f5a647bb6ca" />
 
+* **센서 FOV와 예상 경로 비교**: 차량의 예상 주행 경로와 센서별 시야각(FOV)을 분석하여 현재 상황에서 핵심적인 센서를 실시간으로 선택합니다.
+    * Sensor Selection: Dynamically selects critical sensors by comparing the predicted driving path with the sensor's Field of View (FOV).
+
+### 2. 비헤이비어 트리 기반 의사결정
 <img width="1095" height="722" alt="Image" src="https://github.com/user-attachments/assets/b0e7ae72-5a8d-4aeb-9aec-52898cf62de9" />
-ISO26262에 따른 정적, 동적 FTTI 생성 및 고장 판단에 활용
+
+* **Fail-Safe 전략 수립**: 시스템의 최종적인 판단 및 제어 전략은 비헤이비어 트리 아키텍처를 통해 결정됩니다.
+    * Decision Making: The final fail-safe judgment and strategy are determined via Behavior Tree.
+
+### 3. ISO 26262 기능 안전 규격 준수
+* **FTTI 기반 고장 진단**: ISO 26262 표준에 따른 정적 및 동적 FTTI(Fault Tolerant Time Interval)를 생성하여 고장 판단에 활용합니다.
+    * Functional Safety: Utilizing static and dynamic FTTI for fault diagnosis in accordance with ISO 26262 standards.
