@@ -2,6 +2,7 @@
 ### Fail-Safe Monitoring Module for Autonomous Vehicles
 
 본 프로젝트는 자율주행 시스템의 안전성 확보를 위한 실시간 센서 상태 모니터링 및 고장 판단 알고리즘을 구현합니다.
+
 This project implements real-time sensor status monitoring and fault diagnosis algorithms to ensure the safety of autonomous driving systems.
 
 ## 주요 구성 (Key Components)
