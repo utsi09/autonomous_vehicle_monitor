@@ -1,6 +1,6 @@
 # 자율주행차 센서 상태 모니터링 모듈
 ### Fail-Safe Monitoring Module for Autonomous Vehicles
-
+![Visitor Count](https://visitor-badge.laobi.icu/badge?page_id=utsi09.autonomous_vehicle_monitor&left_text=Total%20Visitors&design=flat-square&color=blue)
 본 프로젝트는 자율주행 시스템의 안전성 확보를 위한 실시간 센서 상태 모니터링 및 고장 판단 알고리즘을 구현합니다.
 * This project implements real-time sensor status monitoring and fault diagnosis algorithms to ensure the safety of autonomous driving systems.
 
