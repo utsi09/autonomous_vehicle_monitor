@@ -37,7 +37,7 @@ public:
 
         } 
         setOutput("lidar_timeout", timeout);
-        cout <<"타임아웃 : "<< timeout*1000 <<" ms"<< endl;
+        cout <<"lidar 타임아웃 : "<< timeout*1000 <<" ms"<< endl;
         return BT::NodeStatus::SUCCESS;
     }
 private:

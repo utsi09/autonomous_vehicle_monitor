@@ -15,7 +15,7 @@
 
                 <Action ID="ObstacleSubscriber"
                 topic_name="/hesai_zed/obstacles"
-                obstacles="{@nearest_obstacle}"/>
+                nearest_obstacle="{@nearest_obstacle}"/>
 
             </Parallel>
 
@@ -25,8 +25,8 @@
                     current_heading="{@current_heading}"
                     important_sensors="{@important_sensors}"/>
 
-            <Action ID="CalculateFTTI"
-                    obstacles="{@obstacles}"
+            <Action ID="CalculateFtti"
+                    nearest_obstacle="{@nearest_obstacle}"
                     important_sensors="{@important_sensors}"
                     
                     lidar_ftti="{@lidar_ftti}"

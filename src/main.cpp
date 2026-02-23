@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 
     //팩토리 설정
     factory.registerNodeType<UpdateSystemState>("UpdateSystemState", params);
-    factory.registerNodeType<CalculateFTTI>("CalculateFTTI");
+    factory.registerNodeType<CalculateFtti>("CalculateFtti");
 
     factory.registerNodeType<LidarChecker>("LidarChecker",params);
     factory.registerNodeType<CamChecker>("CamChecker",params);

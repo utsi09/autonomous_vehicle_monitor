@@ -17,20 +17,32 @@ UpdateSystemState::UpdateSystemState(const string& name, const NodeConfig& confi
     tf_buffer_ = std::make_shared<tf2_ros::Buffer>(node_->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
-    // {name, frame, ns, h_fov(deg), range(m), r, g, b, a}
-    sensors_ = {
-        {"Hesai_AT128",     "hesai_lidar",       "hesai",        120.0, 200.0,  0.0f, 1.0f, 0.0f, 0.7f},
-        {"Valeo_SCALA_L",   "front_lidar_left",  "valeo_lidar",  133.0, 150.0,  0.0f, 1.0f, 0.0f, 0.7f},
-        {"Valeo_SCALA_R",   "front_lidar_right", "valeo_lidar",  133.0, 150.0,  0.0f, 1.0f, 0.0f, 0.7f},
-        {"ZED_X_Front",     "zedx_base_link",    "zedx",         110.0,  20.0,  0.0f, 0.9f, 0.6f, 0.7f},
-        {"ZED_Back",        "zed_back",          "zed_back",     110.0,  20.0,  0.0f, 0.9f, 0.6f, 0.7f},
-        {"OAK-D_Left",      "oakd_left",         "oakd",          81.0,  12.0,  0.0f, 0.9f, 0.6f, 0.7f},
-        {"OAK-D_Right",     "oakd_right",        "oakd",          81.0,  12.0,  0.0f, 0.9f, 0.6f, 0.7f},
-        {"Radar_FL",        "valeo_radar_fl",    "radar",        140.0, 200.0,  0.5f, 1.0f, 0.0f, 0.65f},
-        {"Radar_FR",        "valeo_radar_fr",    "radar",        140.0, 200.0,  0.5f, 1.0f, 0.0f, 0.65f},
-        {"Radar_RL",        "valeo_radar_rl",    "radar",        140.0, 200.0,  0.5f, 1.0f, 0.0f, 0.65f},
-        {"Radar_RR",        "valeo_radar_rr",    "radar",        140.0, 200.0,  0.5f, 1.0f, 0.0f, 0.65f},
-    };
+    node_->declare_parameter<vector<string>>("sensors.names",vector<string>{});
+    vector<string> names;
+    node_->get_parameter("sensors.names", names);
+
+    for (const auto& sensor_name : names) {
+        string prefix = "sensors." + sensor_name + ".";
+        node_->declare_parameter<string>(prefix+"frame_id","");
+        node_->declare_parameter<string>(prefix+"ns","");
+        node_->declare_parameter<double>(prefix + "h_fov_deg", 0.0);
+        node_->declare_parameter<double>(prefix + "range", 0.0);
+        node_->declare_parameter<std::vector<double>>(prefix + "color", {0,0,0,0});
+
+        SensorFovSpec spec;
+        spec.name = sensor_name;
+        node_->get_parameter(prefix + "frame_id", spec.frame_id);
+        node_->get_parameter(prefix + "ns", spec.ns);
+        node_->get_parameter(prefix + "h_fov_deg", spec.h_fov_deg);
+        node_->get_parameter(prefix + "range", spec.range);
+
+        std::vector<double> color;
+        node_->get_parameter(prefix + "color", color);
+        spec.r = color[0]; spec.g = color[1];
+        spec.b = color[2]; spec.a = color[3];
+        
+        sensors_.push_back(spec);
+    }
 }
 
 PortsList UpdateSystemState::providedPorts() {

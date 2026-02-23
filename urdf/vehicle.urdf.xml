@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<robot name="hyper_car">
+
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+
+  <material name="orange">
+    <color rgba="1.0 0.4235 0.0392 1.0"/>
+  </material>
+
+  
+<link name="base_link">
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <box size="1 1 1"/>
+    </geometry>
+    <material name="Cyan">
+      <color rgba="0 1 1 1"/>
+    </material>
+  </visual>
+</link>
+
+<link name="gps">
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <cylinder radius="0.1" length="0.5"/>
+    </geometry>
+    <material name="Green">
+      <color rgba="0 1 0 1"/>
+    </material>
+  </visual>
+</link>
+
+<link name="gps_back">
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <cylinder radius="0.1" length="0.5"/>
+    </geometry>
+    <material name="Green">
+      <color rgba="0 1 0 1"/>
+    </material>
+  </visual>
+</link>
+
+<link name="imu">
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <cylinder radius="0.1" length="0.5"/>
+    </geometry>
+    <material name="Green">
+      <color rgba="0 1 0 1"/>
+    </material>
+  </visual>
+</link>
+
+  <link name="front_lidar_left">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.07"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <link name="front_lidar_right">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.07"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <link name="oakd_left">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <box size=".1 .05 .08" />
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <link name="oakd_right">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <box size=".1 .05 .08" />
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <link name="zedx_base_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <box size=".1 .05 .08" />
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <link name="zed_back">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <box size=".1 .05 .08" />
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <link name="hesai_lidar">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.07"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <link name="valeo_radar_fl">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.07"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <link name="valeo_radar_fr">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.07"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <link name="valeo_radar_rl">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.07"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <link name="valeo_radar_rr">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.07"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+  
+  <!-- GPS -->
+  <joint name="base_link_to_gps" type="fixed">
+    <parent link="base_link"/>
+    <child link="gps"/>
+    <origin xyz="0.0 0.0 1.660" rpy="0 0 0"/>
+  </joint>
+
+  <!-- GPS Back -->
+  <joint name="base_link_to_gps_back" type="fixed">
+    <parent link="gps"/>
+    <child link="gps_back"/>
+    <origin xyz="-1.890 0.0 0.0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Roof Lidar -->
+  <joint name="gps_to_hesai_lidar" type="fixed">
+    <parent link="gps"/>
+    <child link="hesai_lidar"/>
+    <origin xyz="0.232668 0 0.113159" rpy="0 0.174533 0"/>
+  </joint>
+
+  <!-- Valeo Lidar -->
+  <joint name="gps_to_front_lidar_left" type="fixed">
+    <parent link="gps"/>
+    <child link="front_lidar_left"/>
+    <origin xyz="2.28192 0.350 -1.0131" rpy="0 0 0.3577925"/>
+  </joint>
+
+  <joint name="gps_to_front_lidar_right" type="fixed">
+    <parent link="gps"/>
+    <child link="front_lidar_right"/>
+    <origin xyz="2.28192 -0.350 -1.0131" rpy="0 0 -0.3577925"/>
+  </joint>
+
+  <!-- ZED -->
+  <joint name="gps_to_zedx_base_link" type="fixed">
+    <parent link="gps"/>
+    <child link="zedx_base_link"/>
+    <origin xyz="0.353894 0 -0.0211" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="gps_to_zed_back" type="fixed">
+    <parent link="gps"/>
+    <child link="zed_back"/>
+    <origin xyz= "-1.99813 -0.350 -0.334333" rpy="0 0 3.14159"/>
+  </joint>
+
+  <!-- OAK-D -->
+  <joint name="gps_to_oakd_left" type="fixed">
+    <parent link="gps"/>
+    <child link="oakd_left"/>
+    <origin xyz= "0.659421 0.994938 -0.389925" rpy="0 0 2.96706"/>
+  </joint>
+
+  <joint name="gps_to_oakd_right" type="fixed">
+    <parent link="gps"/>
+    <child link="oakd_right"/>
+    <origin xyz= "0.659421 -0.994938 -0.389925" rpy="0 0 -2.96706"/>
+  </joint>
+
+  <!-- Valeo Radar -->
+  <joint name="gps_to_valeo_radar_fl" type="fixed">
+    <parent link="gps"/>
+    <child link="valeo_radar_fl"/>
+    <origin xyz= "2.04707 0.827335 -1.1759" rpy="0 0 0.785398"/>
+  </joint>
+
+  <joint name="gps_to_valeo_radar_fr" type="fixed">
+    <parent link="gps"/>
+    <child link="valeo_radar_fr"/>
+    <origin xyz= "2.04707 -0.827335 -1.1759" rpy="0 0 -0.785398"/>
+  </joint>
+
+  <joint name="gps_to_valeo_radar_rl" type="fixed">
+    <parent link="gps"/>
+    <child link="valeo_radar_rl"/>
+    <origin xyz= "-2.107103 0.809493 -0.9359" rpy="0 0 2.356194"/>
+  </joint>
+
+  <joint name="gps_to_valeo_radar_rr" type="fixed">
+    <parent link="gps"/>
+    <child link="valeo_radar_rr"/>
+    <origin xyz= "-2.107103 -0.809493 -0.9359" rpy="0 0 -2.356194"/>
+  </joint>
+
+  <joint name="gps_back_to_imu" type="fixed">
+    <parent link="gps_back"/>
+    <child link="imu"/>
+    <!-- <origin xyz= "0.0 0.0 -0.560" rpy="0 0 0.0"/> -->
+    <origin xyz="0.0 0.0 -0.560" rpy="3.141592 0 0"/>
+  </joint>
+
+
+</robot>

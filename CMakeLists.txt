@@ -16,6 +16,7 @@ find_package(visualization_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(hesai_zed_fusion REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -36,7 +37,7 @@ add_executable(monitor_node
   # src/camera_check.cpp
   # src/imu_check.cpp
   # src/gps_check.cpp
-  # src/calculate_ftti.cpp
+  src/calculate_ftti.cpp
 )
 
 target_include_directories(monitor_node PUBLIC
@@ -58,6 +59,7 @@ ament_target_dependencies(monitor_node
   tf2_ros
   tf2
   tf2_geometry_msgs
+  hesai_zed_fusion
 )
 
 install(TARGETS monitor_node
@@ -66,4 +68,13 @@ install(TARGETS monitor_node
 install(DIRECTORY behavior_tree
   DESTINATION share/${PROJECT_NAME})
 
+install(DIRECTORY config
+  DESTINATION share/${PROJECT_NAME})
+
+install(DIRECTORY urdf
+  DESTINATION share/${PROJECT_NAME})
+
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
+  
 ament_package()

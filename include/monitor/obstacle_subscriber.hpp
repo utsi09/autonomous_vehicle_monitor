@@ -5,10 +5,10 @@
 #include <iostream>
 using namespace std;
 
-class ObastacleSubscriber : public BT::RosTopicSubNode<hesai_zed_fusion::msg::ObstacleArray>
+class ObstacleSubscriber : public BT::RosTopicSubNode<hesai_zed_fusion::msg::ObstacleArray>
 {
 public:
-    ObastacleSubscriber(const std::string& name, const BT::NodeConfig& conf,
+    ObstacleSubscriber(const std::string& name, const BT::NodeConfig& conf,
                     const BT::RosNodeParams& params)
                     : RosTopicSubNode(name, conf, params) {}
     static BT::PortsList providedPorts()
@@ -27,9 +27,9 @@ public:
             auto obstacles = last_msg->obstacles;
 
             for (const auto &ob : obstacles) {
-                if (obs.distance < min_dist) {
-                    min_dist = obs.distance;
-                    closest_obs = obs;
+                if (ob.distance < min_dist) {
+                    min_dist = ob.distance;
+                    auto closest_obs = ob;
                 }
             }
 
