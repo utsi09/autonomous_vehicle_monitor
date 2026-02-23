@@ -17,31 +17,34 @@ UpdateSystemState::UpdateSystemState(const string& name, const NodeConfig& confi
     tf_buffer_ = std::make_shared<tf2_ros::Buffer>(node_->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
-    node_->declare_parameter<vector<string>>("sensors.names",vector<string>{});
-    vector<string> names;
-    node_->get_parameter("sensors.names", names);
+    // FOV가 있는 타입만 (imu/gps는 FOV 없으므로 제외)
+    vector<string> fov_types = {"lidar", "camera", "radar"};
+    for (const auto& type : fov_types) {
+        vector<string> names;
+        node_->get_parameter("sensors." + type + ".names", names);
 
-    for (const auto& sensor_name : names) {
-        string prefix = "sensors." + sensor_name + ".";
-        node_->declare_parameter<string>(prefix+"frame_id","");
-        node_->declare_parameter<string>(prefix+"ns","");
-        node_->declare_parameter<double>(prefix + "h_fov_deg", 0.0);
-        node_->declare_parameter<double>(prefix + "range", 0.0);
-        node_->declare_parameter<std::vector<double>>(prefix + "color", {0,0,0,0});
+        for (const auto& sensor_name : names) {
+            string prefix = "sensors." + type + "." + sensor_name + ".";
+            node_->declare_parameter<string>(prefix + "frame_id", "");
+            node_->declare_parameter<string>(prefix + "ns", "");
+            node_->declare_parameter<double>(prefix + "h_fov_deg", 0.0);
+            node_->declare_parameter<double>(prefix + "range", 0.0);
+            node_->declare_parameter<std::vector<double>>(prefix + "color", {0,0,0,0});
 
-        SensorFovSpec spec;
-        spec.name = sensor_name;
-        node_->get_parameter(prefix + "frame_id", spec.frame_id);
-        node_->get_parameter(prefix + "ns", spec.ns);
-        node_->get_parameter(prefix + "h_fov_deg", spec.h_fov_deg);
-        node_->get_parameter(prefix + "range", spec.range);
+            SensorFovSpec spec;
+            spec.name = sensor_name;
+            node_->get_parameter(prefix + "frame_id", spec.frame_id);
+            node_->get_parameter(prefix + "ns", spec.ns);
+            node_->get_parameter(prefix + "h_fov_deg", spec.h_fov_deg);
+            node_->get_parameter(prefix + "range", spec.range);
 
-        std::vector<double> color;
-        node_->get_parameter(prefix + "color", color);
-        spec.r = color[0]; spec.g = color[1];
-        spec.b = color[2]; spec.a = color[3];
-        
-        sensors_.push_back(spec);
+            std::vector<double> color;
+            node_->get_parameter(prefix + "color", color);
+            spec.r = color[0]; spec.g = color[1];
+            spec.b = color[2]; spec.a = color[3];
+
+            sensors_.push_back(spec);
+        }
     }
 }
 

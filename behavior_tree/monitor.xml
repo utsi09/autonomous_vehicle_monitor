@@ -2,7 +2,7 @@
     <BehaviorTree ID="MainTree">
         <Sequence name="MainLoop">
             
-            <Parallel name="Subscribers" success_count="2" failure_count="1">
+            <Parallel name="Subscribers" success_count="3" failure_count="1">
 
                 <Action ID="VelSubscriber"
                 topic_name="/vel"
@@ -26,6 +26,8 @@
                     important_sensors="{@important_sensors}"/>
 
             <Action ID="CalculateFtti"
+                    vel_x="{@vel_x}"
+                    vel_y="{@vel_y}"
                     nearest_obstacle="{@nearest_obstacle}"
                     important_sensors="{@important_sensors}"
                     
@@ -35,15 +37,32 @@
                     gps_ftti="{@gps_ftti}"
                     />
 
-            <Parallel name="SensorChecks" success_count="4" failure_count="1">
-                <Action ID="LidarChecker" name="LidarChecker" lidar_timeout="{@lidar_timeout}"/>
-                <Action ID="CamChecker" name="CamChecker" topic_name="/zed/zed_node/rgb/color/rect/image/compressed" cam_timeout="{@cam_timeout}"/>
-                <Action ID="ImuChecker" name="ImuChecker"    topic_name="/imu/data" imu_timeout="{@imu_timeout}"/>
-                <Action ID="GpsChecker" name="GpsChecker"    topic_name="/fix" gps_timeout="{@gps_timeout}"/> 
-            </Parallel>
+            <Parallel name="SensorChecks" success_count="5" failure_count="1">
 
-            <!-- <Action ID="CalculateFTTI"
-                    in_speed="{@current_vel}"/> -->
+                <Parallel name="LidarChecks" success_count="3" failure_count="1">
+                    <Action ID="LidarChecker" name="Hesai_AT128"   topic_name="{@Hesai_AT128_topic}" lidar_timeout="{@Hesai_AT128_timeout}"/>
+                    <Action ID="LidarChecker" name="Valeo_SCALA_L" topic_name="{@Valeo_SCALA_L_topic}" lidar_timeout="{@Valeo_SCALA_L_timeout}"/>
+                    <Action ID="LidarChecker" name="Valeo_SCALA_R" topic_name="{@Valeo_SCALA_R_topic}" lidar_timeout="{@Valeo_SCALA_R_timeout}"/>
+                </Parallel>
+
+                <Parallel name="CameraChecks" success_count="4" failure_count="1">
+                    <Action ID="CamChecker" name="ZED_X_Front" topic_name="{@ZED_X_Front_topic}" cam_timeout="{@ZED_X_Front_timeout}"/>
+                    <Action ID="CamChecker" name="ZED_Back"     topic_name="{@ZED_Back_topic}" cam_timeout="{@ZED_Back_timeout}"/>
+                    <Action ID="CamChecker" name="OAK_D_Left"  topic_name="{@OAK_D_Left_topic}" cam_timeout="{@OAK_D_Left_timeout}"/>
+                    <Action ID="CamChecker" name="OAK_D_Right" topic_name="{@OAK_D_Right_topic}" cam_timeout="{@OAK_D_Right_timeout}"/>
+                </Parallel>
+
+                <Parallel name="RadarChecks" success_count="4" failure_count="1">
+                    <Action ID="RadarChecker" name="Radar_FL" topic_name="{@Radar_FL_topic}" radar_timeout="{@Radar_FL_timeout}"/>
+                    <Action ID="RadarChecker" name="Radar_FR" topic_name="{@Radar_FR_topic}" radar_timeout="{@Radar_FR_timeout}"/>
+                    <Action ID="RadarChecker" name="Radar_RL" topic_name="{@Radar_RL_topic}" radar_timeout="{@Radar_RL_timeout}"/>
+                    <Action ID="RadarChecker" name="Radar_RR" topic_name="{@Radar_RR_topic}" radar_timeout="{@Radar_RR_timeout}"/>
+                </Parallel>
+
+                <Action ID="ImuChecker" name="IMU" topic_name="{@IMU_topic}" imu_timeout="{@IMU_timeout}"/>
+                <Action ID="GpsChecker" name="GPS" topic_name="{@GPS_topic}" gps_timeout="{@GPS_timeout}"/>
+
+            </Parallel>
             
         </Sequence>
     </BehaviorTree>

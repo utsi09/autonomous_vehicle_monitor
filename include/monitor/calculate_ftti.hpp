@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 using namespace BT;
-
+using namespace std;
 class CalculateFtti : public SyncActionNode {
 public:
     CalculateFtti(const std::string& name, const NodeConfig& config);
@@ -19,5 +19,7 @@ public:
     NodeStatus tick() override;
 
 private:
- 
+    double calculate_vel(double vel_x, double vel_y);
+    double calculate_ttc(double vel, double dist);
+    vector<string> parsing_port(string raw);
 };

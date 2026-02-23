@@ -1,15 +1,15 @@
 #pragma once
 #include "behaviortree_ros2/bt_topic_sub_node.hpp"
-#include <sensor_msgs/msg/compressed_image.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 #include <cmath>
 using namespace std;
 
-class CamChecker : public BT::SyncActionNode
+class RadarChecker : public BT::SyncActionNode
 {
 public:
-    CamChecker(const std::string& name, const BT::NodeConfig& conf,
-               const BT::RosNodeParams& params)
-               : SyncActionNode(name, conf)
+    RadarChecker(const std::string& name, const BT::NodeConfig& conf,
+                 const BT::RosNodeParams& params)
+                 : SyncActionNode(name, conf)
     {
         node_ = params.nh.lock();
         std::string topic;
@@ -17,9 +17,9 @@ public:
             topic_ = topic;
             rclcpp::QoS qos(10);
             qos.best_effort();
-            sub_ = node_->create_subscription<sensor_msgs::msg::CompressedImage>(
+            sub_ = node_->create_subscription<sensor_msgs::msg::PointCloud2>(
                 topic_, qos,
-                [this](const sensor_msgs::msg::CompressedImage::SharedPtr){
+                [this](const sensor_msgs::msg::PointCloud2::SharedPtr){
                     last_time_ = node_->now();
                 }
             );
@@ -30,28 +30,28 @@ public:
     {
         return {
             BT::InputPort<std::string>("topic_name"),
-            BT::OutputPort<double>("cam_timeout"),
+            BT::OutputPort<double>("radar_timeout"),
         };
     }
 
     BT::NodeStatus tick() override
     {
         if (topic_.empty()) {
-            setOutput("cam_timeout", -1.0);
+            setOutput("radar_timeout", -1.0);
             return BT::NodeStatus::SUCCESS;
         }
         double timeout = -1.0;
         if (last_time_.nanoseconds() != 0) {
             timeout = (node_->now() - last_time_).seconds();
         }
-        setOutput("cam_timeout", timeout);
+        setOutput("radar_timeout", timeout);
         cout << name() << " 타임아웃 : " << timeout * 1000 << " ms" << endl;
         return BT::NodeStatus::SUCCESS;
     }
 
 private:
     rclcpp::Node::SharedPtr node_;
-    rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr sub_;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr sub_;
     rclcpp::Time last_time_;
     std::string topic_;
 };

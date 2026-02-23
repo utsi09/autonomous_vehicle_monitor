@@ -4,39 +4,54 @@
 #include <cmath>
 using namespace std;
 
-class ImuChecker : public BT::RosTopicSubNode<sensor_msgs::msg::Imu>
+class ImuChecker : public BT::SyncActionNode
 {
 public:
     ImuChecker(const std::string& name, const BT::NodeConfig& conf,
-                    const BT::RosNodeParams& params)
-                    : RosTopicSubNode(name, conf, params) {}
+               const BT::RosNodeParams& params)
+               : SyncActionNode(name, conf)
+    {
+        node_ = params.nh.lock();
+        std::string topic;
+        if (getInput("topic_name", topic) && !topic.empty()) {
+            topic_ = topic;
+            rclcpp::QoS qos(10);
+            qos.best_effort();
+            sub_ = node_->create_subscription<sensor_msgs::msg::Imu>(
+                topic_, qos,
+                [this](const sensor_msgs::msg::Imu::SharedPtr){
+                    last_time_ = node_->now();
+                }
+            );
+        }
+    }
+
     static BT::PortsList providedPorts()
     {
-        return providedBasicPorts({
+        return {
+            BT::InputPort<std::string>("topic_name"),
             BT::OutputPort<double>("imu_timeout"),
-        });
+        };
     }
 
-    BT::NodeStatus onTick(const std::shared_ptr<sensor_msgs::msg::Imu>& last_msg) override
+    BT::NodeStatus tick() override
     {
-        rclcpp::Time now = node_.lock()->now();
-        double timeout = 0.0;
-
-        if (last_msg && last_msg != prev_msg_) {
-            last_time_ = now;
-            prev_msg_ = last_msg;
+        if (topic_.empty()) {
+            setOutput("imu_timeout", -1.0);
+            return BT::NodeStatus::SUCCESS;
         }
-        if (last_time_.nanoseconds() == 0) {
-            timeout = -1.0;
-            //return BT::NodeStatus::FAILURE;
-        } else {
-            timeout = (now - last_time_).seconds();
+        double timeout = -1.0;
+        if (last_time_.nanoseconds() != 0) {
+            timeout = (node_->now() - last_time_).seconds();
         }
         setOutput("imu_timeout", timeout);
-        cout <<"imu 타임아웃 :" << timeout*1000000<<" ms" << endl;
+        cout << name() << " 타임아웃 : " << timeout * 1000 << " ms" << endl;
         return BT::NodeStatus::SUCCESS;
     }
+
 private:
+    rclcpp::Node::SharedPtr node_;
+    rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr sub_;
     rclcpp::Time last_time_;
-    std::shared_ptr<sensor_msgs::msg::Imu> prev_msg_;
+    std::string topic_;
 };

@@ -8,40 +8,50 @@ class LidarChecker : public BT::SyncActionNode
 {
 public:
     LidarChecker(const std::string& name, const BT::NodeConfig& conf,
-                    const BT::RosNodeParams& params)
-                    : SyncActionNode(name, conf)
+                 const BT::RosNodeParams& params)
+                 : SyncActionNode(name, conf)
     {
-        auto node = params.nh.lock();
-        rclcpp::QoS qos(10);
-        qos.best_effort();
-        sub_ = node->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "lidar_points", qos,
-            [this](const sensor_msgs::msg::PointCloud2::SharedPtr){
-                last_time_ = node_->now();
-            }
-        );
-        node_ = node;
+        node_ = params.nh.lock();
+        std::string topic;
+        if (getInput("topic_name", topic) && !topic.empty()) {
+            topic_ = topic;
+            rclcpp::QoS qos(10);
+            qos.best_effort();
+            sub_ = node_->create_subscription<sensor_msgs::msg::PointCloud2>(
+                topic_, qos,
+                [this](const sensor_msgs::msg::PointCloud2::SharedPtr){
+                    last_time_ = node_->now();
+                }
+            );
+        }
     }
+
     static BT::PortsList providedPorts()
     {
         return {
+            BT::InputPort<std::string>("topic_name"),
             BT::OutputPort<double>("lidar_timeout"),
         };
     }
 
     BT::NodeStatus tick() override
     {
+        if (topic_.empty()) {
+            setOutput("lidar_timeout", -1.0);
+            return BT::NodeStatus::SUCCESS;
+        }
         double timeout = -1.0;
         if (last_time_.nanoseconds() != 0) {
             timeout = (node_->now() - last_time_).seconds();
-
-        } 
+        }
         setOutput("lidar_timeout", timeout);
-        cout <<"lidar 타임아웃 : "<< timeout*1000 <<" ms"<< endl;
+        cout << name() << " 타임아웃 : " << timeout * 1000 << " ms" << endl;
         return BT::NodeStatus::SUCCESS;
     }
+
 private:
-    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr sub_;
     rclcpp::Node::SharedPtr node_;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr sub_;
     rclcpp::Time last_time_;
+    std::string topic_;
 };
