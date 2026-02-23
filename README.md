@@ -32,7 +32,7 @@
     * **Faulty (Red)**: Sensors where failures have been detected.
 
 ### 2. 비헤이비어 트리 기반 의사결정 (Decision Making via Behavior Tree)
-<img width="1100" height="723" alt="Image" src="https://github.com/user-attachments/assets/0b136f31-5ccd-4778-8f9f-2e0a1dffaf0c" />
+<img width="1094" height="705" alt="Image" src="https://github.com/user-attachments/assets/6ffe708e-cf7b-4eb3-a2e2-513ca58d2adb" />
 
 * **Fail-Safe 전략 수립**: 시스템의 최종적인 판단 및 제어 전략은 비헤이비어 트리(Behavior Tree) 아키텍처를 통해 결정됩니다.
     * The final fail-safe judgment and strategy are determined via Behavior Tree.
