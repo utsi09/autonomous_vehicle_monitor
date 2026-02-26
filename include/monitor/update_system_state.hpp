@@ -31,7 +31,7 @@ public:
 private:
     visualization_msgs::msg::Marker createFovMarker(
         const SensorFovSpec& spec, int id, const rclcpp::Time& stamp,
-        bool is_important);
+        bool is_important, bool is_failed);
 
     bool isPathInFov(const std::vector<geometry_msgs::msg::Point>& path_points,
                      const SensorFovSpec& spec);

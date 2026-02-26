@@ -45,8 +45,10 @@ public:
         if (last_time_.nanoseconds() != 0) {
             timeout = (node_->now() - last_time_).seconds() * 1000;
         }
+        bool failed = (timeout < 0 || timeout > ftti);
+        config().blackboard->set(name() + "_failed", failed);
         cout << name() << " timeout: " << timeout << "ms / ftti: " << ftti << "ms" << endl;
-        return BT::NodeStatus::SUCCESS;
+        return failed ? BT::NodeStatus::FAILURE : BT::NodeStatus::SUCCESS;
     }
 
 private:

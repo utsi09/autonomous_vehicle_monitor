@@ -96,7 +96,7 @@ bool UpdateSystemState::isPathInFov(
 
 visualization_msgs::msg::Marker UpdateSystemState::createFovMarker(
     const SensorFovSpec& spec, int id, const rclcpp::Time& stamp,
-    bool is_important)
+    bool is_important, bool is_failed)
 {
     visualization_msgs::msg::Marker marker;
     marker.header.frame_id = spec.frame_id;
@@ -106,7 +106,13 @@ visualization_msgs::msg::Marker UpdateSystemState::createFovMarker(
     marker.type = visualization_msgs::msg::Marker::LINE_STRIP;
     marker.action = visualization_msgs::msg::Marker::ADD;
 
-    if (is_important) {
+    if (is_failed) {
+        marker.scale.x = 0.05;
+        marker.color.r = 1.0f;
+        marker.color.g = 0.0f;
+        marker.color.b = 0.0f;
+        marker.color.a = 1.0f;
+    } else if (is_important) {
         marker.scale.x = 0.03;
         marker.color.r = 1.0f;
         marker.color.g = 0.5f;
@@ -215,13 +221,16 @@ NodeStatus UpdateSystemState::tick() {
     visualization_msgs::msg::MarkerArray fov_array;
     vector<string> important_list;
 
+    auto bb = config().blackboard;
     for (size_t i = 0; i < sensors_.size(); i++) {
         bool important = isPathInFov(path_points, sensors_[i]);
         if (important) {
             important_list.push_back(sensors_[i].name);
         }
+        bool failed = false;
+        bb->get(sensors_[i].name + "_failed", failed);
         fov_array.markers.push_back(
-            createFovMarker(sensors_[i], static_cast<int>(i), now, important));
+            createFovMarker(sensors_[i], static_cast<int>(i), now, important, failed));
     }
     fov_pub_->publish(fov_array);
 

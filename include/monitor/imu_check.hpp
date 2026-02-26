@@ -50,10 +50,10 @@ public:
         } else {
             fail_count_ = 0;
         }
+        bool failed = (fail_count_ >= 3);
+        config().blackboard->set(name() + "_failed", failed);
         cout << name() << " timeout: " << timeout << "ms / ftti: " << ftti << "ms / fail: " << fail_count_ << endl;
-        if (fail_count_ >= 3)
-            return BT::NodeStatus::FAILURE;
-        return BT::NodeStatus::SUCCESS;
+        return failed ? BT::NodeStatus::FAILURE : BT::NodeStatus::SUCCESS;
     }
 
 private:
