@@ -1,9 +1,11 @@
 import os
 from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
     pkg_dir = get_package_share_directory('monitor')
@@ -21,8 +23,16 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true'
     )
 
+    # fusion = get_package_share_directory('hesai_zed_fusion')
+    # fusion_launch = os.path.join(fusion,'launch','fusion.launch.py')
+    # included_fusion = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(fusion_launch),
+    #     # launch_arguments=().items()
+    # )
+
     return LaunchDescription([
         use_sim_time_arg,
+        # included_fusion,
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',

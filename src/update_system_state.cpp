@@ -233,7 +233,7 @@ NodeStatus UpdateSystemState::tick() {
 
     // 블랙보드
     setOutput("important_sensors", important_str);
-
+    cout << "-------------------------------" << endl;
     cout << "[Monitor] Important Sensors: "
          << (important_str.empty() ? "None" : important_str) << endl;
 

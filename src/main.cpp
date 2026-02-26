@@ -60,7 +60,7 @@ int main(int argc, char** argv)
         {"camera", "CamChecker",   "cam_timeout"},
         {"radar",  "RadarChecker", "radar_timeout"},
     };
-
+ 
     std::map<std::string, std::vector<std::string>> type_names_map;
 
     for (const auto& info : type_infos) {
@@ -71,6 +71,9 @@ int main(int argc, char** argv)
             shared_node->get_parameter(names_key, names);
         } catch (const std::exception&) {}
         type_names_map[info.type] = names;
+
+        blackboard->set("lidar_names", type_names_map["lidar"]);
+        blackboard->set("camera_names", type_names_map["camera"]);
 
         for (const auto& name : names) {
             std::string prefix = "sensors." + info.type + "." + name + ".";
@@ -90,6 +93,8 @@ int main(int argc, char** argv)
     shared_node->get_parameter("sensors.gps.topic", gps_topic);
     blackboard->set("IMU_topic", imu_topic);
     blackboard->set("GPS_topic", gps_topic);
+    blackboard->set("lidar_names", type_names_map["lidar"]);
+    blackboard->set("camera_names", type_names_map["camera"]);
 
     int non_empty_groups = 0;
     for (const auto& info : type_infos) {
@@ -117,8 +122,7 @@ int main(int argc, char** argv)
               vel_x="{@vel_x}" vel_y="{@vel_y}"
               nearest_obstacle="{@nearest_obstacle}"
               important_sensors="{@important_sensors}"
-              lidar_ftti="{@lidar_ftti}" cam_ftti="{@cam_ftti}"
-              imu_ftti="{@imu_ftti}" gps_ftti="{@gps_ftti}"/>
+              lidar_names="{@lidar_names}" camera_names="{@camera_names}"/>
 
       <Parallel name="SensorChecks" success_count=")" + std::to_string(non_empty_groups + 2) + R"(" failure_count="1">
 )";
@@ -148,6 +152,7 @@ int main(int argc, char** argv)
   </BehaviorTree>
 </root>)";
 
+    //std::cout << xml << std::endl;
     factory.registerNodeType<UpdateSystemState>("UpdateSystemState", params);
     factory.registerNodeType<CalculateFtti>("CalculateFtti");
     factory.registerNodeType<LidarChecker>("LidarChecker", params);
@@ -162,7 +167,7 @@ int main(int argc, char** argv)
     rclcpp::Rate loop_rate(10);
     while(rclcpp::ok() && !g_should_exit) {
         rclcpp::spin_some(shared_node);
-        tree.tickWhileRunning(10ms);
+        tree.tickOnce();
         loop_rate.sleep();
     }
 
