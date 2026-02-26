@@ -85,14 +85,14 @@ NodeStatus CalculateFtti::tick() {
         ftti_map[name] = 850.0;
     }
     for (const auto& name : important_sensors_names) {
-        ftti_map[name] = ttc;
+        if (ttc < 850.0)
+            ftti_map[name] = ttc;
     }
 
     for (auto& [name,value] : ftti_map){
         bb->set(name + "_ftti", value);
         RCLCPP_INFO(rclcpp::get_logger("ftti_names"), "%s : %.2f", name.c_str(), value);
     }
-
     
 
     return NodeStatus::SUCCESS;

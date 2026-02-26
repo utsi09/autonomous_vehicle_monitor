@@ -30,22 +30,29 @@ public:
     {
         return {
             BT::InputPort<std::string>("topic_name"),
-            BT::OutputPort<double>("gps_timeout"),
+            BT::InputPort<double>("gps_ftti"),
         };
     }
 
     BT::NodeStatus tick() override
     {
         if (topic_.empty()) {
-            setOutput("gps_timeout", -1.0);
             return BT::NodeStatus::SUCCESS;
         }
+        double ftti = 850.0;
+        getInput("gps_ftti", ftti);
         double timeout = -1.0;
         if (last_time_.nanoseconds() != 0) {
-            timeout = (node_->now() - last_time_).seconds();
+            timeout = (node_->now() - last_time_).seconds() * 1000;
         }
-        setOutput("gps_timeout", timeout);
-        cout << name() << " 타임아웃 : " << timeout * 1000 << " ms" << endl;
+        if (timeout < 0 || timeout > period_ms_ * 3) {
+            fail_count_++;
+        } else {
+            fail_count_ = 0;
+        }
+        cout << name() << " timeout: " << timeout << "ms / ftti: " << ftti << "ms / fail: " << fail_count_ << endl;
+        if (fail_count_ >= 3)
+            return BT::NodeStatus::FAILURE;
         return BT::NodeStatus::SUCCESS;
     }
 
@@ -54,4 +61,6 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr sub_;
     rclcpp::Time last_time_;
     std::string topic_;
+    double period_ms_ = 50.0;
+    int fail_count_ = 0;
 };

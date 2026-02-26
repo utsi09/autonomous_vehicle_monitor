@@ -30,7 +30,7 @@ void signal_handler(int) { g_should_exit = true; }
 struct SensorTypeInfo {
     std::string type;
     std::string bt_id;
-    std::string timeout_port;
+    std::string ftti_port;
 };
 
 int main(int argc, char** argv)
@@ -56,9 +56,9 @@ int main(int argc, char** argv)
     blackboard->set("important_sensors", std::string(""));
 
     std::vector<SensorTypeInfo> type_infos = {
-        {"lidar",  "LidarChecker", "lidar_timeout"},
-        {"camera", "CamChecker",   "cam_timeout"},
-        {"radar",  "RadarChecker", "radar_timeout"},
+        {"lidar",  "LidarChecker", "lidar_ftti"},
+        {"camera", "CamChecker",   "cam_ftti"},
+        {"radar",  "RadarChecker", "radar_ftti"},
     };
  
     std::map<std::string, std::vector<std::string>> type_names_map;
@@ -93,6 +93,7 @@ int main(int argc, char** argv)
     shared_node->get_parameter("sensors.gps.topic", gps_topic);
     blackboard->set("IMU_topic", imu_topic);
     blackboard->set("GPS_topic", gps_topic);
+    
     blackboard->set("lidar_names", type_names_map["lidar"]);
     blackboard->set("camera_names", type_names_map["camera"]);
 
@@ -135,15 +136,15 @@ int main(int argc, char** argv)
         for (const auto& name : names) {
             xml += R"(          <Action ID=")" + info.bt_id + R"(" name=")" + name
                 + R"(" topic_name="{@)" + name + R"(_topic}" )"
-                + info.timeout_port + R"(="{@)" + name + R"(_timeout}"/>
+                + info.ftti_port + R"(="{@)" + name + R"(_ftti}"/>
 )";
         }
         xml += R"(        </Parallel>
 )";
     }
 
-    xml += R"(        <Action ID="ImuChecker" name="IMU" topic_name="{@IMU_topic}" imu_timeout="{@IMU_timeout}"/>
-        <Action ID="GpsChecker" name="GPS" topic_name="{@GPS_topic}" gps_timeout="{@GPS_timeout}"/>
+    xml += R"(        <Action ID="ImuChecker" name="IMU" topic_name="{@IMU_topic}" imu_ftti="{@IMU_ftti}"/>
+        <Action ID="GpsChecker" name="GPS" topic_name="{@GPS_topic}" gps_ftti="{@GPS_ftti}"/>
 )";
 
     xml += R"(      </Parallel>

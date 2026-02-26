@@ -23,16 +23,16 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true'
     )
 
-    # fusion = get_package_share_directory('hesai_zed_fusion')
-    # fusion_launch = os.path.join(fusion,'launch','fusion.launch.py')
-    # included_fusion = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(fusion_launch),
-    #     # launch_arguments=().items()
-    # )
+    fusion = get_package_share_directory('hesai_zed_fusion')
+    fusion_launch = os.path.join(fusion,'launch','fusion.launch.py')
+    included_fusion = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(fusion_launch),
+        # launch_arguments=().items()
+    )
 
     return LaunchDescription([
         use_sim_time_arg,
-        # included_fusion,
+        included_fusion,
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',

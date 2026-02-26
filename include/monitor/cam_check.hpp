@@ -30,23 +30,26 @@ public:
     {
         return {
             BT::InputPort<std::string>("topic_name"),
-            BT::OutputPort<double>("cam_timeout"),
+            BT::InputPort<double>("cam_ftti"),
         };
     }
 
     BT::NodeStatus tick() override
     {
         if (topic_.empty()) {
-            setOutput("cam_timeout", -1.0);
             return BT::NodeStatus::SUCCESS;
         }
+        double ftti = 850.0;
+        getInput("cam_ftti", ftti);
         double timeout = -1.0;
         if (last_time_.nanoseconds() != 0) {
-            timeout = (node_->now() - last_time_).seconds();
+            timeout = (node_->now() - last_time_).seconds() * 1000;
         }
-        setOutput("cam_timeout", timeout);
-        cout << name() << " 타임아웃 : " << timeout * 1000 << " ms" << endl;
-        return BT::NodeStatus::SUCCESS;
+        cout << name() << " timeout: " << timeout << "ms / ftti: " << ftti << "ms" << endl;
+        if (timeout < 0 || timeout > ftti)
+            return BT::NodeStatus::FAILURE;
+        else
+            return BT::NodeStatus::SUCCESS;
     }
 
 private:
